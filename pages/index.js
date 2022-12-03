@@ -5,7 +5,7 @@ import Head from 'next/head'
 import Post from '../components/Post'
 
 
- function Home({posts}) {
+export default function Home({posts}) {
   return (
     <div>
       <Head>
@@ -19,8 +19,6 @@ import Post from '../components/Post'
     </div>
   )
 }
-
-export default Home
 
 export async function getStaticProps(){
   const files = fs.readdirSync(path.join('posts'))
