@@ -1,40 +1,49 @@
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
-import Head from 'next/head'
-import Post from '../components/Post'
+import { getSortedPostsData } from '../lib/posts';
+import Link from 'next/link'
+const fs = require('fs');
 
-
-export default function Home({posts}) {
+export default function Home({allPostsData}) {
   return (
     <div>
-      <Head>
-        <title>Tech Blog</title>
-      </Head>
-      <div classname = 'posts'>
-        {posts.map((post, index) =>(
-          <Post post = {post}/>
-        ) )}
-      </div>
+      <section>
+        <ul className='list'>
+          {allPostsData.map(({ id, date, title }) => (
+            <li key={id}>
+              <Link href={`/posts/${title}`}>{title}</Link>
+              <br />
+              {id}
+              <br />
+              {date}
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   )
 }
 
-export async function getStaticProps(){
-  const files = fs.readdirSync(path.join('posts'))
-
-  const posts = files.map(filename => {
-    const slug = filename.replace('.md', '')
-    const markdownWithMeta = fs.readFileSync(path.join('posts', filename), 'utf-8')
-    const { data:frontMatter } = matter(markdownWithMeta)
-    return{
-      slug,
-      frontMatter
-    }
-  })
-  return{
-    props:{
-      posts,
-    }
-  }
+export async function getStaticProps() {
+  const allPostsData = getSortedPostsData();
+   //console.log({allPostsData}) // confirmed to be receiving data
+  return {
+    props: { allPostsData }
+  };
 }
+
+
+
+
+
+// export async function getSortedPostsData(){
+//    
+
+//   const posts = files.map(filename => {
+//     
+//     const markdownWithMeta = fs.readFileSync(path.join('posts', filename), 'utf-8')
+//     const { data:frontMatter } = matter(markdownWithMeta)
+//     return{
+//       slug,
+//       frontMatter
+//     }
+//   })
+// }
